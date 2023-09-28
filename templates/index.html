@@ -41,19 +41,19 @@
             The last column is a bit more complicated, here's how the filters work:
             <ul>
                 <li>0: The company has a different URL from its parent. It may be part of a group but is distinct enough to be considered separately.</li>
-                <li>1: The company has an ultimate parent company, and its URL is different from its parents.</li>
-                <li>2: The company has a parent (but not an ultimate parent), and its URL is different from its parent.</li>
+                <li>1: The company has an ultimate parent company, and its URL matches with the ultimate parent.</li>
+                <li>2: The company has a parent (but not an ultimate parent), and its URL matches with the parent.</li>
             </ul>
             Therefore:
             <ul>
                 <li>"0" indicates that the company should not be excluded because it has a unique URL.</li>
-                <li>"1" indicates that the company has an ultimate parent with a unique URL.</li>
-                <li>"2" indicates that the company has a parent but not an ultimate parent, and it has a unique URL.</li>
+                <li>"1" indicates that the company has an ultimate parent with matching URL and can be excluded.</li>
+                <li>"2" indicates that the company has a parent but not an ultimate parent, with matching URL and can be excluded.</li>
             </ul>
             Basically, setting the last column as 0 probably does what you want. We've set that as the default.
         </p>
 
-        <p>Where you see a duplicate row, it’s not a duplicate, it’s just that the company has multiple parents. You can see that in <a href="https://register.openownership.org/entities/3250043135892301959/graph" rel="noopener" target="_blank">this example</a>.</p>
+        <p>Where you see a duplicate row, it’s not a duplicate, it’s just that the company has multiple parents / ultimate parents. You can see that in <a href="https://register.openownership.org/entities/3250043135892301959/graph" rel="noopener" target="_blank">this example</a>.</p>
 
         <form action="/uploader" method="POST" enctype="multipart/form-data">
             <input type="file" name="file" />
