@@ -1,12 +1,61 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deduplicator</title>
+    <style>
+        /* Container styles */
+        .container {
+            width: 100%; /* This will make the container full width. Adjust if necessary */
+            margin: 0 auto; /* This centers the container if you decide to use a specific width instead of 100% */
+        }
+
+        /* No wrap style for content you want to stay on one line */
+        .no-wrap {
+            white-space: nowrap;
+        }
+    </style>
+</head>
 
 <body>
-    Requires Companies as Rows in the CSV file.
-    On the platform, download the Basic - CSV file. If it fails, this is probably why.
-    <form action="/uploader" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" multiple />
-        <input type="submit" />
-    </form>
+    <div class="container">
+        <p>On the platform, download format: <strong>XLSX</strong>, download detail: <strong>BASIC</strong></p>
+
+        <h2>Columns Added:</h2>
+        <p class="no-wrap">
+            <strong>PARENT_COMPANY_REG</strong>: For the company in the row, what is the parent company's company number (if they are part of a group structure)?
+        </p>
+        <p class="no-wrap">
+            <strong>ULTIMATE_PARENT_COMPANY_REG</strong>: For the company in the row, what is the top level company in the group structure (if they are part of a group structure)?
+        </p>
+        <p><strong>I_am_parent</strong>: For the company in the row, am I a parent company?</p>
+        <p><strong>I_have_parent</strong>: For the company in the row, do I have a parent company?</p>
+
+        <p>
+            The last column is a bit more complicated, here's how the filters work:
+            <ul>
+                <li>0: The company has a different URL from its parent. It may be part of a group but is distinct enough to be considered separately.</li>
+                <li>1: The company has an ultimate parent company, and its URL is different from its parents.</li>
+                <li>2: The company has a parent (but not an ultimate parent), and its URL is different from its parent.</li>
+            </ul>
+            Therefore:
+            <ul>
+                <li>"0" indicates that the company should not be excluded because it has a unique URL.</li>
+                <li>"1" indicates that the company has an ultimate parent with a unique URL.</li>
+                <li>"2" indicates that the company has a parent but not an ultimate parent, and it has a unique URL.</li>
+            </ul>
+            Basically, setting the last column as 0 probably does what you want. We've set that as the default.
+        </p>
+
+        <p>Where you see a duplicate row, it’s not a duplicate, it’s just that the company has multiple parents. You can see that in <a href="https://register.openownership.org/entities/3250043135892301959/graph" target="_blank">this example</a>.</p>
+
+        <form action="/uploader" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" multiple />
+            <input type="submit" />
+        </form>
+    </div>
 </body>
 
 </html>
