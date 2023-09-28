@@ -1,0 +1,5 @@
+pandas
+flask
+XlsxWriter
+sqlite3
+werkzeug
