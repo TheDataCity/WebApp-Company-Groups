@@ -1,11 +1,17 @@
-from datetime import datetime
-from dotenv import load_dotenv
-from flask import Flask, render_template, request, send_file
-from pathlib import Path
+"""
+Created on Thu Sep 28 01:05:23 2023
+
+@author: Bijen Bhadresh Shah, Jack Lewis, James Bell
+"""
 import os
+import sqlite3
+from datetime import datetime
+from pathlib import Path
+
 import pandas as pd
 import sentry_sdk
-import sqlite3
+from dotenv import load_dotenv
+from flask import Flask, render_template, request, send_file
 from werkzeug.utils import secure_filename
 
 load_dotenv(override=True)
@@ -27,11 +33,29 @@ Path(OUTPUT_FOLDER).mkdir(parents=True, exist_ok=True)
 app = Flask(__name__)
 
 def allowed_file(filename):
+    """
+    Checks if the filename provided ends with an allowed file extension
+
+    Parameters
+    ----------
+        filename (str): The filename to check
+
+    Returns
+    -------
+        bool: True if the file extension is within the allowed list, False otherwise
+    """
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
 def execute_sql_file(file_path, conn):
-    with open(file_path, 'r') as sql_file:
+    """
+    Reads the contents of a file and executes it as a SQL query
+
+    Parameters
+    ----------
+        file_path (str): The filename to check
+        conn (Connection): Database connection
+    """
+    with open(file_path, 'r', encoding='utf-8') as sql_file:
         sql_script = sql_file.read()
     conn.executescript(sql_script)
     conn.commit()
@@ -39,10 +63,21 @@ def execute_sql_file(file_path, conn):
 
 @app.route("/")
 def index():
+    """
+    Renders the home page template
+    """
     return render_template("index.html")
 
 
 def save_output_to_excel(output, writer):
+    """
+    Saves a DataFrame as an Excel file
+
+    Parameters
+    ----------
+        output (DataFrame): The data frame to process
+        writer (ExcelWriter): Excel writer class object
+    """
     output.to_excel(writer, sheet_name="Sheet1", index=False)
     work_sheet = writer.sheets['Sheet1']
 
@@ -63,12 +98,14 @@ def save_output_to_excel(output, writer):
 
 @app.route("/uploader", methods=["POST"])
 def upload():
+    """
+    Handles the uploaded file
+    """
     files = request.files.getlist("file")
     if len(files) != 1:
         return render_template("index.html", error='You are only allowed to upload one file.')
 
     file = files[0]
-    print(file)
     if file and allowed_file(file.filename):
 
         file.filename = secure_filename(file.filename)
@@ -94,12 +131,12 @@ def upload():
             conn.executescript(drop_query)
             conn.commit()
 
-        output_filename = f"{OUTPUT_FOLDER}/output-{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+        filename_datetime = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+        output_filename = f"{OUTPUT_FOLDER}/output-{filename_datetime}.xlsx"
         writer = pd.ExcelWriter(output_filename, engine='xlsxwriter')  #pylint: disable=abstract-class-instantiated
         save_output_to_excel(output, writer)
 
     return send_file(output_filename, as_attachment=True)
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
