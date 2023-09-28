@@ -3,3 +3,5 @@ flask~=2.3.3
 werkzeug~=2.3.7
 XlsxWriter~=3.1.5
 openpyxl~=3.1.2
+python-dotenv==1.0.0
+sentry_sdk==1.31.0

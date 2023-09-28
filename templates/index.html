@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deduplicator</title>
     <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
         /* Container styles */
         .container {
             width: 100%; /* This will make the container full width. Adjust if necessary */
@@ -49,10 +53,10 @@
             Basically, setting the last column as 0 probably does what you want. We've set that as the default.
         </p>
 
-        <p>Where you see a duplicate row, it’s not a duplicate, it’s just that the company has multiple parents. You can see that in <a href="https://register.openownership.org/entities/3250043135892301959/graph" target="_blank">this example</a>.</p>
+        <p>Where you see a duplicate row, it’s not a duplicate, it’s just that the company has multiple parents. You can see that in <a href="https://register.openownership.org/entities/3250043135892301959/graph" rel="noopener" target="_blank">this example</a>.</p>
 
         <form action="/uploader" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" multiple />
+            <input type="file" name="file" />
             <input type="submit" />
         </form>
     </div>
